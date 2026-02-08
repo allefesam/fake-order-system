@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Fake Order System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    button {
+      margin-right: 10px;
+      margin-top: 10px;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Fake Order System</h1>
+
+  <p id="order-status">Estado do pedido: Criado</p>
+
+  <!-- Fluxo feliz -->
+  <button id="pay-button">Pagar</button>
+  <button id="process-button">Processar</button>
+  <button id="receive-button">Receber</button>
+
+  <!-- Transição alternativa -->
+  <button id="cancel-button">Cancelar</button>
+
+  <p id="message"></p>
+
+  <script>
+    let orderState = "Criado";
+
+    const statusText = document.getElementById("order-status");
+    const messageText = document.getElementById("message");
+
+    const payButton = document.getElementById("pay-button");
+    const processButton = document.getElementById("process-button");
+    const receiveButton = document.getElementById("receive-button");
+    const cancelButton = document.getElementById("cancel-button");
+
+    function updateUI() {
+      statusText.textContent = `Estado do pedido: ${orderState}`;
+      messageText.textContent = "";
+
+      payButton.disabled = true;
+      processButton.disabled = true;
+      receiveButton.disabled = true;
+      cancelButton.disabled = true;
+
+      if (orderState === "Criado") {
+        payButton.disabled = false;
+        cancelButton.disabled = false;
+      }
+
+      if (orderState === "Pago") {
+        processButton.disabled = false;
+      }
+
+      if (orderState === "Processando") {
+        receiveButton.disabled = false;
+      }
+    }
+
+    payButton.addEventListener("click", () => {
+      if (orderState === "Criado") {
+        orderState = "Pago";
+        updateUI();
+      }
+    });
+
+    processButton.addEventListener("click", () => {
+      if (orderState === "Pago") {
+        orderState = "Processando";
+        updateUI();
+      }
+    });
+
+    receiveButton.addEventListener("click", () => {
+      if (orderState === "Processando") {
+        orderState = "Recebido";
+        updateUI();
+        messageText.textContent = "Pedido finalizado com sucesso.";
+      }
+    });
+
+    cancelButton.addEventListener("click", () => {
+      if (orderState === "Criado") {
+        orderState = "Cancelado";
+        updateUI();
+        messageText.textContent = "Pedido cancelado.";
+      }
+    });
+
+    updateUI();
+  </script>
+
+</body>
+</html>
